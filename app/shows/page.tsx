@@ -1,42 +1,69 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import shows from '../data/shows.json';
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function ShowsList() {
+const SUBGRAPH_URL = "https://api.studio.thegraph.com/query/95666/vibesync-subgraph/version/latest";
+const SHOWS_QUERY = `{
+  collections(first: 5) {
+    id
+    showTitle
+    djName
+    location
+    date
+  }
+}`;
+
+export default function ShowsPage() {
+  const [shows, setShows] = useState([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  useEffect(() => {
+    async function fetchShows() {
+      try {
+        const response = await fetch(SUBGRAPH_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: SHOWS_QUERY }),
+        });
+        const { data } = await response.json();
+        setShows(data.collections);
+      } catch (error) {
+        console.error("Error fetching shows:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchShows();
+  }, []);
+
   return (
-    <div className="bg-black min-h-screen text-white flex flex-col items-center p-6">
-      <h2 className="text-lg font-semibold mt-10">Upcoming Shows</h2>
-
-      <div className="w-full max-w-lg space-y-4 mt-4">
-        {shows.map((show) => (
-          <div
-            key={show.id}
-            className="flex items-center justify-between bg-gray-900 border border-gray-800 rounded-xl p-4 cursor-pointer hover:bg-gray-800 transition shadow-lg"
-            onClick={() => router.push(`/shows/${show.id}`)}
-          >
-            <div className="flex items-center space-x-3">
-              {/* Show Icon */}
-              <div className="text-2xl">{show.icon}</div>
-
-              {/* Show Details */}
-              <div>
-                <h3 className="text-white font-semibold">{show.name}</h3>
-                <p className="text-gray-400 text-sm">{show.date} - {show.venue} - {show.price}</p>
-              </div>
+    <div className="bg-black min-h-screen text-white flex flex-col items-center justify-center p-6">
+      <h1 className="text-3xl font-bold mt-6">Upcoming Shows</h1>
+      {loading ? (
+        <p className="mt-6">Loading shows...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          {shows.map((show) => (
+            <div 
+              key={show.id} 
+              className="p-4 bg-gray-800 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition"
+              onClick={() => router.push(`/shows/${show.id}`)}
+            >
+              <h2 className="text-2xl font-semibold">{show.showTitle}</h2>
+              <p className="text-sm text-gray-400">Date: {show.date}</p>
+              <p className="text-sm text-gray-400">DJ: {show.djName}</p>
+              <p className="text-sm text-gray-400">Location: {show.location}</p>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Back Button */}
-      <button
-        className="mt-6 px-6 py-2 bg-gray-700 rounded-full text-white text-lg font-medium hover:bg-gray-600 transition"
-        onClick={() => router.push('/')}
+          ))}
+        </div>
+      )}
+      <button 
+        onClick={() => router.push("/")}
+        className="mt-6 px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-white text-lg font-medium"
       >
-        Back to Home
+        Return Home
       </button>
     </div>
   );

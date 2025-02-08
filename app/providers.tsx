@@ -11,6 +11,8 @@ export function Providers(props: { children: ReactNode }) {
           chain={base}
           config={{ appearance: { 
             mode: 'auto',
+            name: "VibeSync",
+            theme: "default"
         },
         wallet: { 
           display: 'modal', 
