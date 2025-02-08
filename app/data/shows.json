@@ -1,0 +1,37 @@
+[
+    {
+      "id": 1,
+      "name": "DJ Leovation",
+      "date": "10 Feb",
+      "venue": "The Palace",
+      "price": "$20",
+      "icon": "🔵"
+    },
+    {
+      "id": 2,
+      "name": "Swings of Leon",
+      "date": "13 Feb",
+      "venue": "The Fillmore",
+      "price": "$30",
+      "icon": "🟠"
+    },
+    {
+      "id": 3,
+      "name": "DJ Leometry",
+      "date": "14 Feb",
+      "venue": "The Fillmore",
+      "price": "$25",
+      "icon": "🟢",
+      "description": "Modern Trap - Bass Throwdown",
+      "details": "DJ Leometry delivers a hard-hitting bass assault with electrifying drops and high-energy fire anthems."
+    },
+    {
+      "id": 4,
+      "name": "DJ Bass Lion",
+      "date": "14 Feb",
+      "venue": "The Palace",
+      "price": "$45",
+      "icon": "🔴"
+    }
+  ]
+  
