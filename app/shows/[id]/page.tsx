@@ -2,15 +2,43 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { Wallet, ConnectWallet, ConnectWalletText } from "@coinbase/onchainkit/wallet";
+import { TransactionDefault } from "@coinbase/onchainkit/transaction";
+
+const BASE_SEPOLIA_CHAIN_ID = 84532;
+
+const NFT_MINT_ABI = [
+  {
+    "type": "function",
+    "name": "mint",
+    "inputs": [
+      {
+        "name": "data",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "_tokenURI",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  }
+];
 
 const SUBGRAPH_URL = "https://api.studio.thegraph.com/query/95666/vibesync-subgraph/version/latest";
+const METADATA_URI = "https://devnet.irys.xyz/tx/94TNg3UUKyZ96Dj8eSo9DVkBiivAz9jT39jjMFeTFvm3/data";
 
 export default function ShowDetailsPage() {
   const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [viewingDetails, setViewingDetails] = useState(true);
   const [inputVibe, setInputVibe] = useState(false);
+  const [mintSuccess, setMintSuccess] = useState(false);
   const [vibeText, setVibeText] = useState("");
+  const [walletAddress, setWalletAddress] = useState(null);
   const router = useRouter();
   const { id } = useParams();
 
@@ -67,7 +95,7 @@ export default function ShowDetailsPage() {
           <p className="text-lg text-gray-400">Collection Address: {show.collectionAddress}</p>
           
           <button 
-            onClick={() => setViewingDetails(false)}
+            onClick={() => { setViewingDetails(false); setInputVibe(true); }}
             className="mt-6 px-6 py-3 bg-green-500 hover:bg-green-600 rounded-lg text-white text-lg font-medium"
           >
             Get Your (NFT) Ticket
@@ -81,8 +109,11 @@ export default function ShowDetailsPage() {
         </div>
       ) : inputVibe ? (
         <div className="p-6 bg-gray-800 rounded-lg text-center w-full max-w-2xl">
-          <h1 className="text-3xl font-bold mb-4">Add your vibe</h1>
-          <p className="text-gray-400">Desired show vibe</p>
+          <h1 className="text-3xl font-bold mb-4">How it Works</h1>
+          <p className="text-lg text-gray-400 mb-2">1. Connect your wallet</p>
+          <p className="text-lg text-gray-400 mb-2">2. Share your vibe</p>
+          <p className="text-lg text-gray-400 mb-2">3. Mint your NFT ticket</p>
+          <p className="text-lg text-gray-400 mb-2">4. Enjoy the music!</p>
           <input
             type="text"
             className="w-full p-3 mt-3 text-black rounded-md"
@@ -90,42 +121,31 @@ export default function ShowDetailsPage() {
             value={vibeText}
             onChange={(e) => setVibeText(e.target.value)}
           />
-          <p className="text-gray-400 mt-2">Your vibe will be combined with other attendees to influence the setlist the DJ plays.</p>
-          
-          <button 
-            onClick={() => router.push(`/shows/${id}/mint-nft`)}
-            className={`mt-6 px-6 py-3 rounded-lg text-white text-lg font-medium ${vibeText.length > 0 ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-500 cursor-not-allowed'}`}
-            disabled={vibeText.length === 0}
+          <TransactionDefault
+            chainId={BASE_SEPOLIA_CHAIN_ID}
+            calls={[{
+              address: show.collectionAddress,
+              abi: NFT_MINT_ABI,
+              functionName: "mint",
+              args: [vibeText, METADATA_URI]
+            }]}
+            className="mt-6 px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-white text-lg font-medium"
+            onSuccess={() => { setMintSuccess(true); setInputVibe(false); }}
           >
-            Mint your NFT Ticket
-          </button>
+            Proceed
+          </TransactionDefault>
           <button 
-            onClick={() => setInputVibe(false)}
+            onClick={() => { setInputVibe(false); setViewingDetails(true); }}
             className="mt-6 px-6 py-3 bg-gray-700 hover:bg-gray-800 rounded-lg text-white text-lg font-medium"
           >
             Back to Show Details
           </button>
         </div>
-      ) : (
+      ) : mintSuccess ? (
         <div className="p-6 bg-gray-800 rounded-lg text-center w-full max-w-2xl">
-          <h1 className="text-3xl font-bold mb-4">How it Works</h1>
-          <p className="text-gray-400">Buy Your Ticket - Secure your spot with an NFT ticket.</p>
-          <p className="text-gray-400 mt-2">Submit Your Vibe - Enter your unique vibe phrase, which will shape the night's music.</p>
-          <p className="text-gray-400 mt-2">Experience the Show - A live setlist co-created by you, the DJ, and AI.</p>
-          <p className="text-gray-400 mt-2">Watch your NFT Evolve - After the show, your NFT evolves with new visuals & a setlist link.</p>
-          
-          <button 
-            onClick={() => setViewingDetails(true)}
-            className="mt-6 px-6 py-3 bg-gray-700 hover:bg-gray-800 rounded-lg text-white text-lg font-medium"
-          >
-            Back to Show Details
-          </button>
-          <button 
-            onClick={() => setInputVibe(true)}
-            className="mt-6 px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-white text-lg font-medium"
-          >
-            Input Your Vibes
-          </button>
+          <h1 className="text-3xl font-bold mb-4">Mint Successful!</h1>
+          <p className="text-lg text-gray-400 mb-2">Your NFT has been successfully minted!</p>
+          <p className="text-lg text-gray-400 mb-4">You can view it on your wallet or on the blockchain explorer.</p>
           <button 
             onClick={() => router.push("/shows")}
             className="mt-6 px-6 py-3 bg-gray-500 hover:bg-gray-600 rounded-lg text-white text-lg font-medium"
@@ -133,7 +153,7 @@ export default function ShowDetailsPage() {
             Back to Shows
           </button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
