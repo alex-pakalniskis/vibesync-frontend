@@ -14,20 +14,8 @@ const SHOWS_QUERY = `{
   }
 }`;
 
-// Define the Show type
-type Show = {
-    id: string;
-    showTitle: string;
-    djName: string;
-    location: string;
-    date: string;
-    startTime: string;
-    genre: string;
-    collectionAddress: string;
-  };
-
 export default function ShowsPage() {
-  const [shows, setShows] = useState<Show[]>([]);
+  const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 

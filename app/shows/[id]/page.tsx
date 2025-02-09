@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Wallet, ConnectWallet, ConnectWalletText, WalletDropdown, WalletDropdownDisconnect} from "@coinbase/onchainkit/wallet";
-import { Transaction} from "@coinbase/onchainkit/transaction";
+import { TransactionDefault } from "@coinbase/onchainkit/transaction";
 import {
   Address,
   Avatar,
@@ -32,27 +32,14 @@ const NFT_MINT_ABI = [
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
-  },
-] as const;
-
-// Define the Show type
-type Show = {
-  id: string;
-  showTitle: string;
-  djName: string;
-  location: string;
-  date: string;
-  startTime: string;
-  genre: string;
-  collectionAddress: string;
-};
-
+  }
+];
 
 const SUBGRAPH_URL = "https://api.studio.thegraph.com/query/95666/vibesync-subgraph/version/latest";
 const METADATA_URI = "https://devnet.irys.xyz/tx/94TNg3UUKyZ96Dj8eSo9DVkBiivAz9jT39jjMFeTFvm3/data";
 
 export default function ShowDetailsPage() {
-  const [show, setShow] = useState<Show>();
+  const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [viewingDetails, setViewingDetails] = useState(true);
   const [inputVibe, setInputVibe] = useState(false);
@@ -159,10 +146,10 @@ export default function ShowDetailsPage() {
             value={vibeText}
             onChange={(e) => setVibeText(e.target.value)}
           />
-          <Transaction
+          <TransactionDefault
             chainId={BASE_SEPOLIA_CHAIN_ID}
             calls={[{
-              address: `0x${show.collectionAddress}`,
+              address: show.collectionAddress,
               abi: NFT_MINT_ABI,
               functionName: "mint",
               args: [vibeText, METADATA_URI]
@@ -171,7 +158,7 @@ export default function ShowDetailsPage() {
             onSuccess={() => { setMintSuccess(true); setInputVibe(false); }}
           >
             Submit
-          </Transaction>
+          </TransactionDefault>
           <button 
             onClick={() => { setInputVibe(false); setViewingDetails(true); }}
             className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
