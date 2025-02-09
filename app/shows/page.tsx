@@ -61,7 +61,7 @@ export default function ShowsPage() {
       )}
       <button 
         onClick={() => router.push("/")}
-        className="mt-6 px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-white text-lg font-medium"
+        className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
       >
         Return Home
       </button>

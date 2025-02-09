@@ -38,7 +38,6 @@ export default function ShowDetailsPage() {
   const [inputVibe, setInputVibe] = useState(false);
   const [mintSuccess, setMintSuccess] = useState(false);
   const [vibeText, setVibeText] = useState("");
-  const [walletAddress, setWalletAddress] = useState(null);
   const router = useRouter();
   const { id } = useParams();
 
@@ -96,13 +95,13 @@ export default function ShowDetailsPage() {
           
           <button 
             onClick={() => { setViewingDetails(false); setInputVibe(true); }}
-            className="mt-6 px-6 py-3 bg-green-500 hover:bg-green-600 rounded-lg text-white text-lg font-medium"
+            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
           >
             Get Your (NFT) Ticket
           </button>
           <button 
             onClick={() => router.push("/shows")}
-            className="mt-6 px-6 py-3 bg-gray-500 hover:bg-gray-600 rounded-lg text-white text-lg font-medium"
+            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
           >
             Back to Shows
           </button>
@@ -114,6 +113,12 @@ export default function ShowDetailsPage() {
           <p className="text-lg text-gray-400 mb-2">2. Share your vibe</p>
           <p className="text-lg text-gray-400 mb-2">3. Mint your NFT ticket</p>
           <p className="text-lg text-gray-400 mb-2">4. Enjoy the music!</p>
+          <div className="flex justify-center mt-4">
+            <Wallet>
+              <ConnectWallet className="mt-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300" />
+              <ConnectWalletText>Connect Wallet</ConnectWalletText>
+            </Wallet>
+          </div>
           <input
             type="text"
             className="w-full p-3 mt-3 text-black rounded-md"
@@ -129,14 +134,14 @@ export default function ShowDetailsPage() {
               functionName: "mint",
               args: [vibeText, METADATA_URI]
             }]}
-            className="mt-6 px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-white text-lg font-medium"
+            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
             onSuccess={() => { setMintSuccess(true); setInputVibe(false); }}
           >
-            Proceed
+            Submit
           </TransactionDefault>
           <button 
             onClick={() => { setInputVibe(false); setViewingDetails(true); }}
-            className="mt-6 px-6 py-3 bg-gray-700 hover:bg-gray-800 rounded-lg text-white text-lg font-medium"
+            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
           >
             Back to Show Details
           </button>
@@ -148,9 +153,15 @@ export default function ShowDetailsPage() {
           <p className="text-lg text-gray-400 mb-4">You can view it on your wallet or on the blockchain explorer.</p>
           <button 
             onClick={() => router.push("/shows")}
-            className="mt-6 px-6 py-3 bg-gray-500 hover:bg-gray-600 rounded-lg text-white text-lg font-medium"
+            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
           >
             Back to Shows
+          </button>
+          <button 
+            onClick={() => router.push("/tickets")}
+            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
+          >
+            View Your Tickets
           </button>
         </div>
       ) : null}
