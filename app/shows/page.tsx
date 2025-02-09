@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 const SUBGRAPH_URL = "https://api.studio.thegraph.com/query/95666/vibesync-subgraph/version/latest";
 const SHOWS_QUERY = `{
-  collections(first: 5) {
+  collections(first: 10) {
     id
     showTitle
     djName

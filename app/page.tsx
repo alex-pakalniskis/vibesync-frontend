@@ -11,16 +11,16 @@ import {
   ConnectWallet,
   ConnectWalletText,
   WalletDropdown,
-  WalletDropdownDisconnect,
+  WalletDropdownDisconnect
 } from '@coinbase/onchainkit/wallet';
 import Link from 'next/link';
 import Image from 'next/image';
-
+import { useState } from 'react';
 import { useRouter } from "next/navigation";
-
 
 export default function HomePage() {
   const router = useRouter();
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
 
   return (
     <div className="bg-black min-h-screen text-white flex flex-col items-center justify-center p-6">
@@ -36,16 +36,16 @@ export default function HomePage() {
         </button>
       </Link>
       <button 
-            onClick={() => router.push("/tickets")}
-            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
-          >
-            View Your Tickets
-          </button>
+        onClick={() => router.push("/tickets")}
+        className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
+      >
+        View Your Tickets
+      </button>
 
       {/* Wallet Section */}
       <div className="mt-8 flex flex-col items-center space-y-3">
-        <Wallet>
-          <ConnectWallet  className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300">
+        <Wallet onChange={({ address }) => setWalletAddress(address || null)}>
+          <ConnectWallet className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300">
             <ConnectWalletText>Log In</ConnectWalletText>
             <Avatar />
             <Name />

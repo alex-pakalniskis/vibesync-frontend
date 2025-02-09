@@ -2,8 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Wallet, ConnectWallet, ConnectWalletText } from "@coinbase/onchainkit/wallet";
+import { Wallet, ConnectWallet, ConnectWalletText, WalletDropdown, WalletDropdownDisconnect} from "@coinbase/onchainkit/wallet";
 import { TransactionDefault } from "@coinbase/onchainkit/transaction";
+import {
+  Address,
+  Avatar,
+  Name,
+  Identity,
+  EthBalance,
+} from '@coinbase/onchainkit/identity';
 
 const BASE_SEPOLIA_CHAIN_ID = 84532;
 
@@ -115,8 +122,21 @@ export default function ShowDetailsPage() {
           <p className="text-lg text-gray-400 mb-2">4. Enjoy the music!</p>
           <div className="flex justify-center mt-4">
             <Wallet>
-              <ConnectWallet className="mt-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300" />
-              <ConnectWalletText>Connect Wallet</ConnectWalletText>
+              <ConnectWallet className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300">
+                          <ConnectWalletText>Log In</ConnectWalletText>
+                          <Avatar />
+                          <Name />
+                        </ConnectWallet>
+                        <WalletDropdown>
+                          <Identity>
+                            <Avatar />
+                            <Name />
+                            <Address />
+                            <EthBalance />
+                          </Identity>
+                          <WalletDropdownDisconnect />
+                        </WalletDropdown>
+              
             </Wallet>
           </div>
           <input
@@ -157,12 +177,7 @@ export default function ShowDetailsPage() {
           >
             Back to Shows
           </button>
-          <button 
-            onClick={() => router.push("/tickets")}
-            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full text-white text-lg font-medium hover:shadow-lg hover:opacity-90 transition ease-in-out duration-300"
-          >
-            View Your Tickets
-          </button>
+          
         </div>
       ) : null}
     </div>
